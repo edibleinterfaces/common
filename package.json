@@ -1,0 +1,23 @@
+{
+  "name": "shared_components",
+  "version": "1.0.0",
+  "description": "Shared Components Repo for Edible Interface Apps",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo \"Linting soon.\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edibleinterfaces/shared_components.git"
+  },
+  "author": "Alex Ramsdell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/edibleinterfaces/shared_components/issues"
+  },
+  "homepage": "https://github.com/edibleinterfaces/shared_components#readme"
+}
