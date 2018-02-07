@@ -1,27 +1,34 @@
-/*
- *  EdibleInterfaces Storage Component
- *
- *
- */
+import 'localforage';
+
 const APP_KEY = 'edible-interfaces';
 
+const config = {
+    name        : 'edible-interfaces',
+    version     : 1.0,
+    storeName   : 'Main Store',
+    description : 'Edible Interfaces Storage Adapter'
+};
+
+/* EdibleInterfaces Storage Component */
 class Storage {
 
     constructor(appid, appConfig) {
-        this.store = window.localStorage || localStorage;
-        const initialized = Boolean(this.store.getItem(APP_KEY)); 
-        if (!initialized) {
-            init(appid, appConfig);
-        } 
+        this.store = localforage;
+        this.store.config(config);
+        this.store.getItem(APP_KEY).then(function(appData) {
+            if (!Boolean(appData)) {
+                this.init(appid, appConfig);
+            } 
+        }); 
     }
 
     init(appid, appConfig) {
-        this.store.setItem(APP_KEY, JSON.stringify(siteConfig));
+        this.store.setItem(APP_KEY, appConfig);
     }
 
     /* get and set data on top level config */ 
     get() {
-        return JSON.parse(this.store.getItem(APP_KEY));
+        return this.store.getItem(APP_KEY);
     }
 
     set(data) {
@@ -40,6 +47,7 @@ class Storage {
         store.apps[appId] = data;
         this.set(store);
     }
+
 
 }
 

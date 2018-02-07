@@ -19,5 +19,6 @@
   "bugs": {
     "url": "https://github.com/edibleinterfaces/shared_components/issues"
   },
-  "homepage": "https://github.com/edibleinterfaces/shared_components#readme"
+  "homepage": "https://github.com/edibleinterfaces/shared_components#readme",
+  "dependencies": {}
 }
