@@ -46,15 +46,12 @@
             onUpdate: Function
         },
         data: function() {
-            console.log(this.selected);
-            console.log('init index: ', this.options.indexOf(this.selected));
             return {
                 index: this.options.indexOf(this.selected),
             };
         },
         methods: {
             move(newIndex) {
-                console.log(newIndex);
                 this.index = newIndex;
                 this.onUpdate(this.index);
             },

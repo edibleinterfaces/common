@@ -14,11 +14,8 @@ Vue.use(Vuex);
 
 export default function({ namespace }) {
     return function(store) {
-
         store.subscribe((mutation, state) => {
-            console.log('updating');
             storage.set(namespace, state);
         });
-
     };
 }
