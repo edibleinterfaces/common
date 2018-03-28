@@ -1,6 +1,9 @@
 <style lang="scss">
     .privacy-policy {
-        height: auto;
+        > p {
+            height: auto;
+            line-height: 2em;
+        }
     }
 </style>
 

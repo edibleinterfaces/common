@@ -8,5 +8,6 @@ export default {
                 obj[theme] = [styles[item]];
             return obj;
         },{});
-    }
+    },
+    sortComparator: (fn) => (a,b) => fn(a,b)
 }

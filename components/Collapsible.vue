@@ -15,8 +15,11 @@
 <script>
     export default {
         name: 'ei-collapsible',
-        data: function() {
-            return { open: false };
+        props: {
+            open: {
+                type: Boolean,
+                default: false
+            }
         },
         methods: {
             toggleOpen() {
