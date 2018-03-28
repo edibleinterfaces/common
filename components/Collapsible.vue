@@ -6,7 +6,7 @@
         <div @click="toggleOpen" class="header-container">
             <slot name="header"></slot>
         </div>
-        <div v-show="open" class="content-container">
+        <div v-show="isOpen" class="content-container">
             <slot name="content"></slot>
         </div>
     </div>
@@ -15,15 +15,27 @@
 <script>
     export default {
         name: 'ei-collapsible',
+        data: function() {
+            return {
+                isOpen: this.open 
+            }
+        },
         props: {
             open: {
                 type: Boolean,
                 default: false
+            },
+            static: {
+                type: Boolean,
+                default: false
             }
+
         },
         methods: {
             toggleOpen() {
-                this.open = !this.open;
+                if (this.static) 
+                    return;
+                this.isOpen = !this.isOpen
             }
         }
     }
