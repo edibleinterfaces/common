@@ -1,14 +1,28 @@
-function googleDrive(creds) {
+import creds from 'Common/creds'
+
+function GoogleDrive() {
 
     const apiKey = creds.drive.apiKey;
     const client_id = creds.oauth.clientId;
     const scope = 'https://www.googleapis.com/auth/drive';
-    let isSignedIn = false;
 
     let auth2;
-    authenticate();
 
-    function authenticate() {
+    function authenticate(onSigninChange) {
+
+        function initAuth() {
+            gapi.client.setApiKey(apiKey);
+            gapi.auth2.init({ client_id, scope})
+                .then(function onInit () {
+                    auth2 = gapi.auth2.getAuthInstance();
+                    onSigninChange({ signedIn: auth2.isSignedIn.get(), error: null });
+                })
+                .catch(function onError(e) {
+                    onSigninChange({signedIn: false, error: e});
+                });
+
+        }
+
         try {
             gapi.load('auth2', initAuth);
         } catch(e) {
@@ -16,23 +30,11 @@ function googleDrive(creds) {
         }
     }
 
-    function initAuth() {
-        gapi.client.setApiKey(apiKey);
-        gapi.auth2.init({ client_id, scope}).then(function onInit () {
-            auth2 = gapi.auth2.getAuthInstance();
-        },
-        function onError(e) {
-            throw new Error(e);
-        });
-
-    }
-
-    function handleAuthClick(event) {
-        if (auth2.getAuth
+    function signIn() {
         return auth2.signIn();
     }
 
-    function handleSignoutClick(event) {
+    function signOut(event) {
         return auth2.signOut();
     }
 
@@ -96,11 +98,10 @@ function googleDrive(creds) {
 
     return {
         authenticate,
-        handleAuthClick,
-        handleSignoutClick,
+        signIn,
+        signOut,
         saveFile,
-        isSignedIn
     };
 }
 
-export default googleDrive;
+export default GoogleDrive;
