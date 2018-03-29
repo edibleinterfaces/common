@@ -1,14 +1,16 @@
 function googleDrive(creds) {
 
     const apiKey = creds.drive.apiKey;
-    const clientId = creds.oauth.clientId;
-    const scopes = 'https://www.googleapis.com/auth/drive';
+    const client_id = creds.oauth.clientId;
+    const scope = 'https://www.googleapis.com/auth/drive';
+    let isSignedIn = false;
 
     let auth2;
+    authenticate();
 
     function authenticate() {
         try {
-            gapi.load('client:auth2',initAuth);
+            gapi.load('auth2', initAuth);
         } catch(e) {
             console.warn(e);
         }
@@ -16,19 +18,17 @@ function googleDrive(creds) {
 
     function initAuth() {
         gapi.client.setApiKey(apiKey);
-
-        gapi.auth2.init({
-            client_id: clientId,
-            scope: scopes
-        }).then(function () {
+        gapi.auth2.init({ client_id, scope}).then(function onInit () {
             auth2 = gapi.auth2.getAuthInstance();
-            auth2.isSignedIn.listen((status) => { console.log('gapi: signed in? ', status) });
-            auth2.isSignedIn.get();
+        },
+        function onError(e) {
+            throw new Error(e);
         });
 
     }
 
     function handleAuthClick(event) {
+        if (auth2.getAuth
         return auth2.signIn();
     }
 
@@ -98,7 +98,8 @@ function googleDrive(creds) {
         authenticate,
         handleAuthClick,
         handleSignoutClick,
-        saveFile
+        saveFile,
+        isSignedIn
     };
 }
 
