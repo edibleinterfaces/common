@@ -20,7 +20,7 @@ class LocalStorage {
 
     get(appName) {
         const appData = JSON.parse(this.store.getItem(this.namespace));
-        return appData.apps[appName] || {};
+        return appData.apps[appName];
     }
 
     set(appName, data) {
