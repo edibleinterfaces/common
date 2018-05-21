@@ -22,17 +22,17 @@
 <script>
     export default {
         name: 'ProgressBar',
-        props: ['progressValue', 'progressBgColor', 'progressFgColor'],
+        props: ['progressValue', 'progressBarBgColor', 'progressBarFgColor'],
         computed: {
             containerStyle() {
                 return {
-                    background: this.progressBgColor,
+                    background: this.progressBarBgColor,
                 };
             },
             progressStyle() {
                 return { 
                     width: `${this.progressValue * 100}%`, 
-                    background: this.progressFgColor
+                    background: this.progressBarFgColor
                 };
             }
         }
