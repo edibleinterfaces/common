@@ -1,8 +1,7 @@
 const appKey = 'edible-interfaces';
-const schema = JSON.stringify({ apps: {} });
+const schema = JSON.stringify({ apps: {} }); // bug
 
 class LocalStorage {
-
 
     constructor() {
         this.namespace = appKey;
@@ -18,6 +17,7 @@ class LocalStorage {
         }
     }
 
+    /* am I destroying other apps's local storage data ? */
     get(appName) {
         const appData = JSON.parse(this.store.getItem(this.namespace));
         return appData.apps[appName];
@@ -27,6 +27,12 @@ class LocalStorage {
         const appData = JSON.parse(this.store.getItem(this.namespace));
         appData.apps[appName] = data;
         this.store.setItem(appKey, JSON.stringify(appData));
+    }
+
+    reset() {
+        console.log('BEFORE',localStorage);
+        this.store.setItem(this.namespace, schema);
+        console.log('AFTER',localStorage);
     }
 
 }
