@@ -13,6 +13,7 @@
 </template>
 
 <script>
+
     export default {
         name: 'ei-collapsible',
         data: function() {

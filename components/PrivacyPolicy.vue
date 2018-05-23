@@ -1,5 +1,6 @@
 <style lang="scss">
     .privacy-policy {
+            background: white;
         > p {
             height: auto;
             line-height: 2em;
