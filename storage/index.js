@@ -5,17 +5,15 @@
  *
  */
 
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-import storage from './LocalStorage';
+Vue.use(Vuex)
 
-Vue.use(Vuex);
-
-export default function({ namespace }) {
-    return function(store) {
-        store.subscribe((mutation, state) => {
-            storage.set(namespace, state);
-        });
-    };
+const Persistence = (localStorageInstance) => store => {
+    store.subscribe((mutation, state) => {
+        localStorageInstance.data = state
+    })
 }
+
+export default Persistence 

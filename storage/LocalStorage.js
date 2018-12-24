@@ -1,40 +1,38 @@
-const appKey = 'edible-interfaces';
-const schema = JSON.stringify({ apps: {} }); // bug
+const EI_NAMESPACE = 'edible-interfaces'
+const eiSchema = () => ({ apps: {} })
 
+// todo
+// write a class getter to encapsulate repeated json parsing & writing to ls
 class LocalStorage {
 
     constructor() {
-        this.namespace = appKey;
-        this.store = window.localStorage || localStorage;
 
+        this.store = window.localStorage || localStorage
         if (!this.store)
-            console.warn('No Local Storage available!');
+            console.warn('No Local Storage available!')
 
-        const data = JSON.parse(this.store.getItem(this.namespace));    
+        const eiData = JSON.parse(this.store.getItem(EI_NAMESPACE))    
+        if (!eiData)
+            this.store.setItem(EI_NAMESPACE, JSON.stringify(eiSchema()))
 
-        if (!data) {
-            this.store.setItem(this.namespace, schema);
-        }
     }
 
-    /* am I destroying other apps's local storage data ? */
-    get(appName) {
-        const appData = JSON.parse(this.store.getItem(this.namespace));
-        return appData.apps[appName];
+    get data() {
+      return JSON.parse(this.store.getItem(EI_NAMESPACE))
     }
 
-    set(appName, data) {
-        const appData = JSON.parse(this.store.getItem(this.namespace));
-        appData.apps[appName] = data;
-        this.store.setItem(appKey, JSON.stringify(appData));
+    set data(newData) {
+      this.store.setItem(EI_NAMESPACE, JSON.stringify(newData))
+    }
+
+    get stats() {
+
     }
 
     reset() {
-        console.log('BEFORE',localStorage);
-        this.store.setItem(this.namespace, schema);
-        console.log('AFTER',localStorage);
+        this.store.setItem(EI_NAMESPACE, JSON.stringify(eiSchema()))
     }
 
 }
 
-export default new LocalStorage();
+export default LocalStorage
