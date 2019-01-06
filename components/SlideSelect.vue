@@ -15,8 +15,11 @@
         top: 0;
         position: absolute;
     }
+
     .slide-select-quadrant {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         height: 100%;
         position: absolute;
         top: 0;
@@ -26,14 +29,21 @@
 
 <template>
     <div class="slide-select-container">
-        <div 
-            @click="move(index)" 
-            v-for="(value, index) in options" 
+        <!--  quadrants -->
+        <div
+            @click="move(index)"
+            v-for="(value, index) in options"
             :style="quadrantStyle(index)"
-            class="slide-select-quadrant"></div> 
-        <div 
-            :style="sliderStyle" 
-            class="slide-select-container-handle"></div>
+            :class="{'selected-option': selectedIndex === index }"
+            class="slide-select-quadrant">
+            <span>{{ value }}</span>
+        </div>
+        <!-- slider that moves along x axis, over quadrants -->
+        <div
+            :style="sliderStyle"
+            class="slide-select-container-handle slide-select-quadrant">
+            <slot name="handle"></slot>
+        </div>
     </div>
 </template>
 
@@ -42,22 +52,23 @@
         name: 'ei-slideselect',
         props: {
             options: Array,
-            selected: String,
-            onUpdate: Function
+            selected: String
         },
         data: function() {
             return {
                 index: this.options.indexOf(this.selected),
-            };
+                classObject: {
+                }
+            }
         },
         methods: {
             move(newIndex) {
-                this.index = newIndex;
-                this.onUpdate(this.index);
+                this.index = newIndex
+                this.$emit('slide-select-updated', this.options[this.index], newIndex)
             },
             offsetLeft() {
                 let offset = (100 / this.options.length) * this.index;
-                return `${offset}%`; 
+                return `${offset}%`
             },
             quadrantStyle(index) {
                 return {
@@ -67,12 +78,15 @@
             },
         },
         computed: {
-            sliderStyle() {
-                return {
-                    'width': `${100 / this.options.length}%`,
-                    'left': this.offsetLeft()
-                }
-            },
+          selectedIndex() {
+            return this.options.indexOf(this.selected)
+          },
+          sliderStyle() {
+              return {
+                  'width': `${100 / this.options.length}%`,
+                  'left': this.offsetLeft()
+              }
+          },
         }
     };
 </script>

@@ -10,7 +10,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const Persistence = (localStorageInstance) => store => {
+const Persistence = localStorageInstance => store => {
     store.subscribe((mutation, state) => {
         localStorageInstance.data = state
     })

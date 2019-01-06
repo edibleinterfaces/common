@@ -33,39 +33,49 @@ function signIn() {
 }
 
 function signOut(event) {
-    return auth2.signOut()
+    return auth2 ? auth2.signOut() : Promise.resolve()
 }
 
 function sync(content, id) {
-  // assumption is that the server has the most up-to-date sync content
-
-  // potential issue: we're assuming only one sync file.  is it possible for
-  // more to unintentionally get created?
-  // better to forget storing the file and always look for most recently
-  // created file?
-
-  // logic below:
-  // if we fileId exists in vuex/local storage, get that file from drive
-  // otherwise create a new notask sync file, store id in vuex/local storage
+  // problem: if i sync from one device, and cache that id file 
+  // but then sync from another device, it will also create a new file
+  // but neither will sync.  best to take newest file matching fn pattern, if no id.
   return gapi.client.load('drive', 'v2')
     .then(() => {
 
-      // no file id, so save current content to new sync file
-      if (!id)
-        return saveFile(content).then(
-            id => ({ content, id }), 
-            e => error('Saving File to Google Drive', e)
-        )
+      // no file id, look for newest file or save current content to a sync file
+      if (!id) {
+        console.log('no file id saved, so looking for newest sync file in g drive')
+        return getNewestSyncFileId()
+          .then(({ id }) => {
+            if (id) { 
+              console.log('found a file by id in g drive: ', id)
+              return getFileById(id).then(content => ({ id, content }))
+            } else {
+              console.log('didnt find a file by id in g drive, saving current content there')
+              return saveFile(content)
+                .then(
+                  id => ({ id }), 
+                  e => error('Saving File to Google Drive', e)
+                )
+            }
+            })
+      }
 
       // file id exists, so update sync file
+      console.log('we have a cached sync file id, trying to locate that ...') 
       return getFileById(id)
         .then(content => {
-          // file id not in google drive, so save to 
-          if (!content)
+          // file id not in google drive, so save current content there.
+          if (!content) {
+            console.log('nothing found, so saving current content to g drive api')
             return saveFile(content).then(
                 id => ({ content, id }), 
-                error('Saving File to Google Drive', e)
+                e => error('Saving File to Google Drive', e)
             )
+          }
+          // file found, return id and content
+          console.log('found a sync file, using that')
           return { id, content }
         })
     })
@@ -75,7 +85,7 @@ function getFileById(fileId) {
     return gapi.client.drive.files
       .get({ fileId, alt: 'media' })
         .then(
-          ({ result }) => result.body, // error code 200
+          ({ result, body }) => body, // error code 200
           e => error('Getting file by id: ', e) // error code !== 200, body is error msg
         )
       // if no file exists, call getNewestSyncFile
@@ -84,13 +94,12 @@ function getFileById(fileId) {
 }
 
 function getNewestSyncFileId() {
-    console.log('getting newest sync file: ') 
     return gapi.client.drive.files
         .list({ 
           q: 'title="no-task-sync-file.json"', 
           orderBy: 'modifiedDate desc,title' 
         })
-        .then(({ result }) => result.items[0] ? getFileById(result.items[0].id)() : null)
+        .then(({ result }) => result.items[0])// ? getFileById(result.items[0].id)() : null)
 }
 
 function saveFile(fileData) {
