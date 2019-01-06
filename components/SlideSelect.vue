@@ -31,7 +31,7 @@
     <div class="slide-select-container">
         <!--  quadrants -->
         <div
-            @click="move(index)"
+            @click="move(value)"
             v-for="(value, index) in options"
             :style="quadrantStyle(index)"
             :class="{'selected-option': selectedIndex === index }"
@@ -56,15 +56,12 @@
         },
         data: function() {
             return {
-                index: this.options.indexOf(this.selected),
-                classObject: {
-                }
+                classObject: {}
             }
         },
         methods: {
-            move(newIndex) {
-                this.index = newIndex
-                this.$emit('slide-select-updated', this.options[this.index], newIndex)
+            move(newValue) {
+                this.$emit('slide-select-updated', newValue)
             },
             offsetLeft() {
                 let offset = (100 / this.options.length) * this.index;
@@ -78,6 +75,9 @@
             },
         },
         computed: {
+          index() {
+            return this.options.indexOf(this.selected)
+          },
           selectedIndex() {
             return this.options.indexOf(this.selected)
           },
